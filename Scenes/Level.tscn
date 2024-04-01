@@ -1,0 +1,74 @@
+[gd_scene load_steps=13 format=3 uid="uid://dlsbk1iuook3m"]
+
+[ext_resource type="Texture2D" uid="uid://domjro668f78v" path="res://Imported Assets/KenneyNL Prototyping Textures/Dark/texture_01.png" id="1_j371j"]
+[ext_resource type="Texture2D" uid="uid://nw05jf5qxvrp" path="res://Imported Assets/KenneyNL Prototyping Textures/Light/texture_08.png" id="2_8diak"]
+[ext_resource type="PackedScene" uid="uid://dlqi8ajs0w4ny" path="res://Scenes/Player.tscn" id="2_hldfg"]
+[ext_resource type="Script" path="res://Scripts/Components/Damageable.gd" id="3_jkoba"]
+[ext_resource type="PackedScene" uid="uid://bpa8snqtixdis" path="res://Scenes/UI/Pause Menu.tscn" id="4_52jal"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_kqcvk"]
+
+[sub_resource type="Sky" id="Sky_dcaod"]
+sky_material = SubResource("ProceduralSkyMaterial_kqcvk")
+
+[sub_resource type="Environment" id="Environment_k5q3c"]
+background_mode = 2
+sky = SubResource("Sky_dcaod")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qktme"]
+albedo_texture = ExtResource("1_j371j")
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cbj2g"]
+albedo_texture = ExtResource("2_8diak")
+uv1_triplanar = true
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_deoou"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_yh1ig"]
+
+[node name="Level" type="Node3D"]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.819152, -0.40558, 0.40558, 0, 0.707107, 0.707107, -0.573576, -0.579228, 0.579228, 0, 0, 0)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_k5q3c")
+
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGCombiner3D"]
+size = Vector3(500, 1, 500)
+material = SubResource("StandardMaterial3D_qktme")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 5, -7)
+size = Vector3(4, 10, 10)
+material = SubResource("StandardMaterial3D_cbj2g")
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, -8, 5, 6)
+size = Vector3(4, 10, 10)
+material = SubResource("StandardMaterial3D_cbj2g")
+
+[node name="Player" parent="." instance=ExtResource("2_hldfg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.941502, 0)
+
+[node name="CharacterBody3D" type="CharacterBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -11)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D"]
+shape = SubResource("CapsuleShape3D_deoou")
+
+[node name="CSGMesh3D" type="CSGMesh3D" parent="CharacterBody3D"]
+mesh = SubResource("CapsuleMesh_yh1ig")
+
+[node name="Damageable" type="Node" parent="CharacterBody3D"]
+script = ExtResource("3_jkoba")
+max_health = 2
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Pause Menu" parent="CanvasLayer" instance=ExtResource("4_52jal")]

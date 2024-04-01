@@ -1,0 +1,68 @@
+[gd_scene load_steps=12 format=3 uid="uid://cx7438e7rmniy"]
+
+[ext_resource type="Script" path="res://Scripts/Projectile/Projectile.gd" id="1_q6n55"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_vuxan"]
+size = Vector3(0.5, 0.5, 0.5)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_iqnfb"]
+radius = 0.25
+height = 0.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_w0w6o"]
+albedo_color = Color(1, 1, 0, 1)
+
+[sub_resource type="Curve" id="Curve_jo506"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_kt4x0"]
+curve = SubResource("Curve_jo506")
+
+[sub_resource type="Curve" id="Curve_pwgx3"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_lrby8"]
+curve = SubResource("Curve_pwgx3")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_2vnak"]
+emission_shape_scale = Vector3(0.2, 0.2, 0.2)
+emission_shape = 1
+emission_sphere_radius = 1.0
+direction = Vector3(0, 1, 0)
+initial_velocity_min = 2.0
+initial_velocity_max = 10.0
+scale_curve = SubResource("CurveTexture_kt4x0")
+scale_over_velocity_curve = SubResource("CurveTexture_lrby8")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ja65j"]
+albedo_color = Color(1, 1, 0, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_mh4kw"]
+material = SubResource("StandardMaterial3D_ja65j")
+size = Vector3(0.1, 0.1, 0.1)
+
+[node name="Projectile" type="CharacterBody3D" node_paths=PackedStringArray("hit_effect")]
+script = ExtResource("1_q6n55")
+hit_effect = NodePath("Hit Effect")
+move_speed = 30.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_vuxan")
+
+[node name="GFX" type="Node3D" parent="."]
+
+[node name="CSGMesh3D" type="CSGMesh3D" parent="GFX"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("CapsuleMesh_iqnfb")
+material = SubResource("StandardMaterial3D_w0w6o")
+
+[node name="Hit Effect" type="GPUParticles3D" parent="."]
+cast_shadow = 0
+emitting = false
+amount = 25
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_2vnak")
+draw_pass_1 = SubResource("BoxMesh_mh4kw")

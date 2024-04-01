@@ -1,0 +1,79 @@
+[gd_scene load_steps=10 format=3 uid="uid://dlqi8ajs0w4ny"]
+
+[ext_resource type="Script" path="res://Scripts/Player/PlayerShootController.gd" id="1_gsnrq"]
+[ext_resource type="Texture2D" uid="uid://dd122631wr8w" path="res://Imported Assets/Icons/Crosshairs/crosshair066.png" id="1_nk5gq"]
+[ext_resource type="PackedScene" uid="uid://ci5c8r4vsqe76" path="res://Scenes/Weapons/Charge Shot Blaster.tscn" id="2_17kvi"]
+[ext_resource type="Script" path="res://Scripts/Player/PlayerLocomotionController.gd" id="3_e5bks"]
+[ext_resource type="Script" path="res://Scripts/Player/States/PLGroundMove.gd" id="4_xyaw8"]
+[ext_resource type="Script" path="res://Scripts/Player/States/PLAir.gd" id="5_ftpe1"]
+[ext_resource type="Script" path="res://Scripts/Player/States/PLWallSliding.gd" id="6_g7751"]
+[ext_resource type="Script" path="res://Scripts/Player/States/PLDash.gd" id="7_bmf7b"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_j5hdc"]
+
+[node name="Player" type="CharacterBody3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_j5hdc")
+
+[node name="Gfx" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="Head" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.64479, 0)
+
+[node name="Camera3D" type="Camera3D" parent="Head"]
+current = true
+fov = 90.0
+
+[node name="Aimcast" type="RayCast3D" parent="Head/Camera3D"]
+target_position = Vector3(0, 0, -2000)
+
+[node name="CenterContainer" type="CenterContainer" parent="Head/Camera3D"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Crosshair Texture" type="TextureRect" parent="Head/Camera3D/CenterContainer"]
+layout_mode = 2
+texture = ExtResource("1_nk5gq")
+stretch_mode = 5
+
+[node name="Hand" type="Marker3D" parent="Head/Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, -0.366, -0.893)
+
+[node name="Charge Shot Blaster" parent="Head/Camera3D/Hand" instance=ExtResource("2_17kvi")]
+
+[node name="PlayerShootController" type="Node" parent="." node_paths=PackedStringArray("aim_cast", "curr_weapon")]
+script = ExtResource("1_gsnrq")
+aim_cast = NodePath("../Head/Camera3D/Aimcast")
+curr_weapon = NodePath("../Head/Camera3D/Hand/Charge Shot Blaster")
+
+[node name="PlayerLocomotionController" type="Node" parent="." node_paths=PackedStringArray("dash_cooldown")]
+script = ExtResource("3_e5bks")
+dash_cooldown = NodePath("../Dash Cooldown Timer")
+initial_state = NodePath("PLGroundMove")
+
+[node name="PLGroundMove" type="Node" parent="PlayerLocomotionController"]
+script = ExtResource("4_xyaw8")
+ground_accel = 50.0
+
+[node name="PLAir" type="Node" parent="PlayerLocomotionController"]
+script = ExtResource("5_ftpe1")
+
+[node name="PLWallSliding" type="Node" parent="PlayerLocomotionController"]
+script = ExtResource("6_g7751")
+
+[node name="PLDash" type="Node" parent="PlayerLocomotionController"]
+script = ExtResource("7_bmf7b")
+dash_accel = 500.0
+dash_friction = 10.0
+move_speed = 30.0
+
+[node name="Dash Cooldown Timer" type="Timer" parent="."]
+wait_time = 0.25
+one_shot = true
+autostart = true

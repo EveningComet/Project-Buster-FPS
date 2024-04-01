@@ -1,0 +1,21 @@
+[gd_scene load_steps=5 format=3 uid="uid://ci5c8r4vsqe76"]
+
+[ext_resource type="Script" path="res://Scripts/Weapon/ChargeShotBlaster.gd" id="1_4jfov"]
+[ext_resource type="PackedScene" uid="uid://ya4a2wcyyqb8" path="res://Imported Assets/Weapons/KenneyNL Blaster Kit/BlasterH/blasterH.glb" id="2_8x8g0"]
+[ext_resource type="PackedScene" uid="uid://cx7438e7rmniy" path="res://Scenes/Projectiles/Charge Shot Projectiles/Charge Shot 1.tscn" id="2_qe5n0"]
+[ext_resource type="PackedScene" uid="uid://cxs6n4fxp72dm" path="res://Scenes/Projectiles/Charge Shot Projectiles/Charge Shot 2.tscn" id="3_pmfx7"]
+
+[node name="Charge Shot Blaster" type="Node3D" node_paths=PackedStringArray("charge_effect", "fire_position")]
+script = ExtResource("1_4jfov")
+charge_effect = NodePath("Charge Effect")
+charge_1_prefab = ExtResource("2_qe5n0")
+charge_2_prefab = ExtResource("3_pmfx7")
+fire_position = NodePath("Fire Point")
+
+[node name="blasterH" parent="." instance=ExtResource("2_8x8g0")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+
+[node name="Fire Point" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.292843)
+
+[node name="Charge Effect" type="GPUParticles3D" parent="."]
